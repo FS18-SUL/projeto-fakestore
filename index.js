@@ -12,6 +12,89 @@ function getProducts(){
 
 getProducts();
 
+function getCategories(){
+    fetch("https://fakestoreapi.com/products/categories")
+    .then(resposta => resposta.json())
+    .then(resposta => {
+        resposta.map(categoria => {
+            filtro_categorias.innerHTML += `
+                <option>${categoria}</option>
+            `;
+            filtro_categorias_mobile.innerHTML += `
+                <option>${categoria}</option>
+            `;
+        })
+    })
+} 
+
+getCategories();
+
+function filtrarCategoria(){
+    // recebe o valor do select
+    let categoriaSelecionada = filtro_categorias.value;
+
+    // verifica se a categoria selecionada é igual a "Todos"
+    if(categoriaSelecionada == "Todos"){
+        insertProducts(products);
+        return;
+    }
+    // recebe o resultado do filter no caso, estou perguntando se a categoria do produto é igual a categoria selecionada
+    let filtrados = products.filter(produto => produto.category == categoriaSelecionada);
+    //chamo a função que alimenta a interface com os produtos filtraddos
+    insertProducts(filtrados);
+
+    // outra forma de fazer a mesma coisa
+    // insertProducts(products.filter((produto) => {
+    //     if(produto.category == filtro_categorias.value){
+    //         return produto;
+    //     }
+    // }));
+
+    // versão mais reduzida
+    // insertProducts(products.filter(produto => produto.category == filtro_categorias.value))
+}
+
+function filtrarCategoriaMobile(){
+    // recebe o valor do select
+    let categoriaSelecionada = filtro_categorias_mobile.value;
+
+    // verifica se a categoria selecionada é igual a "Todos"
+    if(categoriaSelecionada == "Todos"){
+        insertProducts(products);
+        showFilter();
+        return;
+    }
+    // recebe o resultado do filter no caso, estou perguntando se a categoria do produto é igual a categoria selecionada
+    let filtrados = products.filter(produto => produto.category == categoriaSelecionada);
+    //chamo a função que alimenta a interface com os produtos filtraddos
+    insertProducts(filtrados);
+    showFilter();
+
+    // outra forma de fazer a mesma coisa
+    // insertProducts(products.filter((produto) => {
+    //     if(produto.category == filtro_categorias.value){
+    //         return produto;
+    //     }
+    // }));
+
+    // versão mais reduzida
+    // insertProducts(products.filter(produto => produto.category == filtro_categorias.value))
+}
+
+function ordenarProdutos(){
+    // opção escolhida pelo usuario
+    let opcao = ordenacao.value;
+    let ordenados;
+    if(opcao == "price"){
+        ordenados = products.toSorted((a, b) => a.price - b.price);
+    } else {
+        ordenados = products.toSorted((a, b) => b.rating.rate - a.rating.rate);
+    }
+    insertProducts(ordenados);
+    showFilter();
+}
+
+
 function insertProducts(list){
     produtos.innerHTML = '';
     list.map(item => {
